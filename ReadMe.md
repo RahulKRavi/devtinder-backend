@@ -5,4 +5,11 @@ Steps on learning
 - Learned that order in routing is important
 - Started using HTTP methods like app.get() and app.post() along with postman
 - Get to know the additional parameters 'err' and 'next' in route handler functions
-- Under stand the effect of next in each route handlers
+- Understand the effect of next in each route handlers
+- Understand how auth middleware works by 
+      - creating a middleware with one HTTP method
+      - then seperating it into a differnt "app.use" above all routs
+      - then seperating that into different file and exporting and requiring
+      - now using the requird variable as the route handler
+      - and finaly passing that inbetween req and response in each routes
+-  
