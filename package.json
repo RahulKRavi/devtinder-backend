@@ -1,0 +1,18 @@
+{
+  "name": "devtinder-backend",
+  "version": "1.0.0",
+  "description": "backend app for devtinder",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "author": "Rahul K Ravi",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
