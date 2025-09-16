@@ -12,4 +12,10 @@ Steps on learning
       - then seperating that into different file and exporting and requiring
       - now using the requird variable as the route handler
       - and finaly passing that inbetween req and response in each routes
--  
+- Add schema level validation in 'userSchema' by adding fields such as
+      - required
+      - default
+      - minlength
+      - maxlength
+      - min, max
+      - validate: function(value){}

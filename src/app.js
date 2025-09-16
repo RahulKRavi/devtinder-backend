@@ -1,14 +1,7 @@
 const express = require("express");
 const app = express();
-const mongoose = require("mongoose");
 const { User } = require("./models/user");
-
-const connectDB = async () => {
-  await mongoose.connect(
-    "mongodb+srv://rahulkr02042000:WfX1LS27biU8MI5f@devtinder.niawz6c.mongodb.net/devTinder"
-  );
-  console.log("Database connected");
-};
+const connectDB = require('./config/database')
 
 connectDB().then(() => {
   app.listen(5000, () => {
