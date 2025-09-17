@@ -19,3 +19,5 @@ Steps on learning
       - maxlength
       - min, max
       - validate: function(value){}
+- Add API level validation in login and signup by creating seperate validation file
+- Add Password Hashing with bcrypt.hash and bcrypt.compare
