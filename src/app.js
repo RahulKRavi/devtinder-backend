@@ -1,10 +1,13 @@
 const express = require("express");
-const app = express();
-const { User } = require("./models/user");
-const connectDB = require("./config/database");
-const { validateSignUp } = require("./utils/validate");
 const bcrypt = require("bcrypt");
-const validator = require('validator')
+const cookieParser = require("cookie-parser");
+const jwt = require('jsonwebtoken')
+
+const connectDB = require("./config/database");
+const { User } = require("./models/user");
+const { validateSignUp, validateLogin } = require("./utils/validate");
+
+const app = express();
 
 connectDB().then(() => {
   app.listen(5000, () => {
@@ -13,8 +16,9 @@ connectDB().then(() => {
 });
 
 app.use(express.json());
+app.use(cookieParser());
 
-app.post("/user", async (req, res) => {
+app.post("/signup", async (req, res) => {
   try {
     validateSignUp(req.body);
     const { firstName, lastName, email, password, age } = req.body;
@@ -33,6 +37,33 @@ app.post("/user", async (req, res) => {
   }
 });
 
+app.post("/login", async (req, res) => {
+  try {
+    const [matchPassword, user] = await validateLogin(req.body);
+    console.log(matchPassword);
+    if (matchPassword) {
+      const token = jwt.sign({userID: user._id},'Eradicator@123')
+      res.cookie("auth_token", token);
+      res.send("Login Succesful");
+    } else {
+      throw new Error("Sorry Friend, Invalid Credentials");
+    }
+  } catch (err) {
+    res.status(400).send("Login Failed: " + err.message);
+  }
+});
+
+app.get("/profile", async (req, res) => {
+  try {
+    const {auth_token} = req.cookies;
+    const {userID} = jwt.verify(auth_token , 'Eradicator@123')
+    const user = await User.findById(userID);
+    res.send(user);
+  } catch (err) {
+    res.status(400).send("ERROR: " + err.message);
+  }
+});
+
 app.patch("/user:userID", async (req, res) => {
   try {
     const userID = req.params.userID;
@@ -42,26 +73,5 @@ app.patch("/user:userID", async (req, res) => {
     res.send("User updated succesfully");
   } catch (err) {
     res.status(401).send("Update got failed: " + err.message);
-  }
-});
-
-app.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-    if (!validator.isEmail(email)) {
-      throw new Error("Sorry Friend, Enter a valid email");
-    }
-    const user = await User.findOne({ email: email });
-    if (!user) {
-      throw new Error("Sorry Friend, Invalid Credentials");
-    }
-    const matchPassword = await bcrypt.compare(password, user.password);
-    if (matchPassword) {
-      res.send("Login Succesful");
-    } else {
-      throw new Error("Sorry Friend, Invalid Credentials");
-    }
-  } catch (err) {
-    res.status(400).send("Login Failed: " + err.message);
   }
 });

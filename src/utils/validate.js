@@ -1,4 +1,6 @@
 const validator = require("validator");
+const bcrypt = require('bcrypt')
+const {User} = require('../models/user')
 
 const validateSignUp = (req) => {
   const { firstName, lastName, email, password, age } = req;
@@ -19,4 +21,17 @@ const validateSignUp = (req) => {
   }
 };
 
-module.exports = { validateSignUp };
+const validateLogin = async (req) => {
+    const { email, password } = req;
+    if (!validator.isEmail(email)) {
+      throw new Error("Sorry Friend, Enter a valid email");
+    }
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      throw new Error("Sorry Friend, Invalid Credentials");
+    }
+    const matchPassword = await bcrypt.compare(password, user.password);
+    return [matchPassword,user]
+}
+
+module.exports = { validateSignUp, validateLogin };
