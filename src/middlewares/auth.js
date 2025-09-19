@@ -1,10 +1,18 @@
-const adminAuth = (req,res,next)=>{
-  const token = '1212';
-  if(token === '1212'){
+const { User } = require('../models/user')
+const jwt = require('jsonwebtoken')
+
+const userAuth = async(req,res,next)=>{
+  try {
+    const {auth_token} = req.cookies
+    if(!auth_token){
+      throw new Error("Unauthorized")
+    }
+    const { userID } = jwt.verify(auth_token,"Eradicator@123")
+    req.userID = userID
     next()
-  } else {
-    res.status(401).send("Unauthorized acces")
+  } catch (err) {
+    res.status(403).send("ERROR:" + err.message)
   }
 }
 
-module.exports = {adminAuth}
+module.exports = {userAuth}

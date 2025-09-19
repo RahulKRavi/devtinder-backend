@@ -1,6 +1,6 @@
 const validator = require("validator");
-const bcrypt = require('bcrypt')
-const {User} = require('../models/user')
+const bcrypt = require("bcrypt");
+const { User } = require("../models/user");
 
 const validateSignUp = (req) => {
   const { firstName, lastName, email, password, age } = req;
@@ -14,7 +14,7 @@ const validateSignUp = (req) => {
     throw new Error("Sorry Friend, Please enter a valid email");
   } else if (!validator.isStrongPassword(password)) {
     throw new Error("Sorry Friend, Please enter a strong password");
-  } else if (typeof age !== "number" || age > 120 ) {
+  } else if (typeof age !== "number" || age > 120) {
     throw new Error("Sorry Friend, Please enter a valid age");
   } else if (age < 18) {
     throw new Error("Sorry Friend, Age should be atleast 18");
@@ -22,16 +22,22 @@ const validateSignUp = (req) => {
 };
 
 const validateLogin = async (req) => {
-    const { email, password } = req;
-    if (!validator.isEmail(email)) {
-      throw new Error("Sorry Friend, Enter a valid email");
-    }
-    const user = await User.findOne({ email: email });
-    if (!user) {
-      throw new Error("Sorry Friend, Invalid Credentials");
-    }
-    const matchPassword = await bcrypt.compare(password, user.password);
-    return [matchPassword,user]
-}
+  const { email, password } = req;
+  if (!validator.isEmail(email)) {
+    throw new Error("Sorry Friend, Enter a valid email");
+  }
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    throw new Error("Sorry Friend, Invalid Credentials");
+  }
+  const matchPassword = await bcrypt.compare(password, user.password);
+  return [matchPassword, user];
+};
 
-module.exports = { validateSignUp, validateLogin };
+const validateProfileUpdate = (req) => {
+  const allowedFields = ['firstName','lastName','age','about','photoURL']
+  if(!Object.keys(req).every(item => allowedFields.includes(item))) {
+    throw new Error('Updation is not allowed on some fields')
+  }
+};
+module.exports = { validateSignUp, validateLogin, validateProfileUpdate };
