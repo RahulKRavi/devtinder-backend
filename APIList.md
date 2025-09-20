@@ -10,7 +10,7 @@
 - GET/profile/connections
 - GET/profile/requests
 
-- POST/send/interested
-- POST/send/ignored
-- POST/review/accept
-- POST/review/reject
+- POST/connection/send/interested
+- POST/connection/send/ignored
+- POST/connection/received/accepted
+- POST/connection/recieved/rejected
